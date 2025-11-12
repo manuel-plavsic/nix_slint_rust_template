@@ -6,9 +6,9 @@ The Android emulator is also included in the dependencies. The right configurati
 
 ## Platforms and corresponding crates
 
-This template supports Linux, MacOS and Android. Work in process is being done to include iOS too.
+This template supports GNU/Linux, MacOS and Android. Work in process is being done to include iOS too.
 
-Since Windows is not supported by Nix, there is currently no support of it. However, this might change in the future. The template might add support through WSL and cross compilation.
+Since Windows is not supported by Nix, there is currently no support for it. However, this might change in the future. The template might add support through WSL and cross compilation.
 
 A Rust crate is defined per platform. This allows to fine-tune the configuration per platform, in detail. A reusable crate for the UI components is not yet included, but it is also planned.
 
@@ -16,12 +16,13 @@ A Rust crate is defined per platform. This allows to fine-tune the configuration
 
 - Ensure you have `nix` installed.
 - Download and all that is in this repo to a new git repo, make small adjustments and create your first commit.
-- Run `nix develop -c nu` (this ensures that nushell is already entered). Since we are already using Rust, why not also use Nushell?!
+- Run `nix develop -c nu` (this ensures that nushell is already entered).
+  - Note that Nushell is the shell used throughout this guide. Feel free to use another one, such as Bash, or Zsh.
   - Note that just `nix develop` will enter bash automatically, regardless of which shell you are calling the command from or you set as default.
 
-### Run app on Linux or MacOS
+### Run app on GNU/Linux or MacOS
 
-NB: If you are on Linux, this template assumes that you are using Wayland (it is possible that it works also on X.11 out of the box). On MacOS, there are no considerations to be made.
+NB: If you are on GNU/Linux, this template assumes that you are using Wayland (it is possible that it works also on X.11 out of the box). On MacOS, there are no considerations to be made.
 
 Steps to run the app:
 
@@ -73,10 +74,10 @@ It is possible to set one or more environment variables to disable certain platf
 
 All flags:
 
-- `NO_ANDROID`: On Linux and macOS, Android support is enabled by default (including the Android emulator). To disable it, set the environment variable `NO_ANDROID=1`.
+- `NO_ANDROID`: On GNU/Linux and macOS, Android support is enabled by default (including the Android emulator). To disable it, set the environment variable `NO_ANDROID=1`.
 - `NO_IOS`: On MacOS, iOS support is enabled by default. To disable it, set the environment variable `NO_IOS=1`.
 - `NO_MACOS`: On MacOS, macOS support is enabled by default. To disable it, set the environment variable `NO_MACOS=1`.
-- `NO_LINUX`: On Linux, Linux support is enabled by default. To disable it, set the environment variable `NO_LINUX=1`.
+- `NO_LINUX`: On GNU/Linux, GNU/Linux support is enabled by default. To disable it, set the environment variable `NO_LINUX=1`.
 
 ### Example: Disable Android support
 
@@ -125,11 +126,11 @@ use flake . --impure
 
 There will be compile time errors if you set the `SLINT_LIVE_PREVIEW` envar without enabling the corresponding feature.
 
-## Linux
+## GNU/Linux
 
-### Vulkan (Linux)
+### Vulkan (GNU/Linux)
 
-Vulkan should work out of the box on Linux. Should it not happen, try adding the following environment variables to the flake:
+Vulkan should work out of the box on GNU/Linux. Should it not happen, try adding the following environment variables to the flake:
 
 ```
 VK_LAYER_PATH = "${pkgs.vulkan-validation-layers}/share/vulkan/explicit_layer.d";
@@ -143,7 +144,7 @@ pkgs.vulkan-headers
 pkgs.vulkan-loader
 ```
 
-### Use OpenGL (Linux)
+### Use OpenGL (GNU/Linux)
 
 To use OpenGL, add the following package to the `linuxLdLibraryPath`:
 
@@ -193,9 +194,9 @@ platformVersions = [
 
 will result in a platform-not-found error. In case this list needs to be shortened, try removing the unwanted platforms one by one and testing immediately afterwards.
 
-### Android Emulator (from Linux)
+### Android Emulator
 
-#### Enable Vulkan support for the Android Emulator (Workstation: Linux)
+#### Enable Vulkan support for the Android Emulator (Host: GNU/Linux)
 
 At the time of writing, Vulkan is correctly detected only if `vulkan-loader` is present in the `LD_LIBRARY_PATH` and if the right paths to Vulkan ICD manifest files are present in `VK_ICD_FILENAMES`.
 
@@ -205,15 +206,15 @@ For example, the following can be used to set `VK_ICD_FILENAMES` to:
 "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json:/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json"
 ```
 
-This should allow the emulator to use Vulkan using any x86_64 workstation. Of course, it is possible to remove some of the paths, or add more (see available ICDs on your machine with `ls /run/opengl-driver/share/vulkan/icd.d/`). This might be necessary if using Linux on ARM (not tested).
+This should allow the emulator to use Vulkan using any x86_64 workstation. Of course, it is possible to remove some of the paths, or add more (see available ICDs on your machine with `ls /run/opengl-driver/share/vulkan/icd.d/`). This might be necessary if using GNU/Linux on ARM (not tested).
 
-#### Vulkan fallbacks to OpenGL
+#### Vulkan fallbacks to OpenGL (Host: GNU/Linux)
 
 While Vulkan is used, there seems to be a translation layer with OpenGL (in the logs appear `Graphics API Version OpenGL ES 3.0 (4.6 (Core Profile) Mesa 25.2.4)` and `useVulkanComposition: false`).
 
 If someone finds a way to enable Vulkan Composition, please open a PR or open an issue/discussion. That would be highly appreciated.
 
-#### Disable Vulkan (Workstation: Linux)
+#### Disable Vulkan (Host: GNU/Linux)
 
 If the emulator is not running correctly, the added flag forces OpenGL-only rendering:
 
@@ -221,7 +222,7 @@ If the emulator is not running correctly, the added flag forces OpenGL-only rend
 emulator -avd a16 -gpu host -feature -Vulkan
 ```
 
-#### Disable Vulkan, GLDirectMem and GLESDynamicVersion (Linux)
+#### Disable Vulkan, GLDirectMem and GLESDynamicVersion (Host: GNU/Linux)
 
 If the emulator is not running correctly, you might try a combination of the following flags:
 
