@@ -99,7 +99,6 @@
           else
             [ ];
 
-        # TODO
         macosLdLibraryPath = if roles.macos then [ ] else [ ];
         macosTools = if roles.macos then [ ] else [ ];
 
@@ -194,7 +193,7 @@
           );
 
           # Android graphics envars
-          QT_QPA_PLATFORM = if roles.android then "wayland;xcb" else null;
+          QT_QPA_PLATFORM = if roles.android then if isLinux then "wayland;xcb" else "cocoa" else null; # cocoa is the mac platform
           LIBGL_DRIVERS_PATH = if roles.android then "/run/opengl-driver/lib/dri" else null;
           VK_ICD_FILENAMES =
             if roles.android then

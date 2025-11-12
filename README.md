@@ -6,7 +6,7 @@ The Android emulator is also included in the dependencies. The right configurati
 
 ## Platforms and corresponding crates
 
-This template supports Linux and Android. Work in process is being done to also add MacOS and iOS.
+This template supports Linux, MacOS and Android. Work in process is being done to include iOS too.
 
 Since Windows is not supported by Nix, there is currently no support of it. However, this might change in the future. The template might add support through WSL and cross compilation.
 
@@ -19,13 +19,13 @@ A Rust crate is defined per platform. This allows to fine-tune the configuration
 - Run `nix develop -c nu` (this ensures that nushell is already entered). Since we are already using Rust, why not also use Nushell?!
   - Note that just `nix develop` will enter bash automatically, regardless of which shell you are calling the command from or you set as default.
 
-### Run app on Linux
+### Run app on Linux or MacOS
 
-This template assumes that you are using Wayland (it is possible that it works also on X.11 out of the box).
+NB: If you are on Linux, this template assumes that you are using Wayland (it is possible that it works also on X.11 out of the box). On MacOS, there are no considerations to be made.
 
 Steps to run the app:
 
-- `cd` to `app-linux`.
+- `cd ./app-linux` or `cd ./app-macos`, depending on your platform.
 
 - ```nu
   SLINT_LIVE_PREVIEW=1 cargo run
