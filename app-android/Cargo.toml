@@ -1,0 +1,27 @@
+[package]
+name = "app-android"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+path = "src/lib.rs"
+name = "app_android" # note: this has to match with [package.name] (except for the hyphen), otherwise there will be a compilation error
+
+[dependencies]
+slint = { version = "~1.14.1", features = [
+  "backend-android-activity-06"
+  # , "live-preview" # TODO: Add "live-preview" once the feature is compatible with Android
+] }
+
+[build-dependencies]
+slint-build = "~1.14.1"
+
+# Andoroid settings
+# See more: https://github.com/rust-mobile/cargo-apk?tab=readme-ov-file#manifest
+[package.metadata.android]
+package = "com.example"
+build_targets = [ "aarch64-linux-android", "x86_64-linux-android" ] # consider adding more targets if needed
+
+[package.metadata.android.application]
+label = "Example"
