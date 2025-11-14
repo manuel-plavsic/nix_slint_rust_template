@@ -63,10 +63,48 @@
         rustTools = with pkgs; [
           (rust-bin.stable.latest.default.override {
             extensions = [ "rust-src" ];
-            targets = (if roles.linux then if system == "aarch64-linux" then ["aarch64-unknown-linux-gnu"] else ["x86_64-unknown-linux-gnu"] else [ ])
-            ++ (if roles.macos then if system == "aarch64-darwin" then ["aarch64-apple-darwin"] else ["x86_64-apple-darwin"] else [ ])
-            ++ (if roles.android then ["aarch64-linux-android" "x86_64-linux-android"] else [ ]) # optionally include older "armv7-linux-androideabi" and "i686-linux-android"
-            ++ (if roles.ios then ["aarch64-apple-ios" "aarch64-apple-ios-sim"] else [ ]);
+            targets =
+              # Linux targets
+              (
+                if roles.linux then
+                  if system == "aarch64-linux" then
+                    [ "aarch64-unknown-linux-gnu" ]
+                  else
+                    [ "x86_64-unknown-linux-gnu" ]
+                else
+                  [ ]
+              )
+              ++
+                # MacOS targets
+                (
+                  if roles.macos then
+                    if system == "aarch64-darwin" then [ "aarch64-apple-darwin" ] else [ "x86_64-apple-darwin" ]
+                  else
+                    [ ]
+                )
+              ++
+                # Android targets
+                (
+                  if roles.android then
+                    [
+                      "aarch64-linux-android"
+                      "x86_64-linux-android"
+                      # optionally include older "armv7-linux-androideabi" and "i686-linux-android"
+                    ]
+                  else
+                    [ ]
+                )
+              ++
+                # iOS targets
+                (
+                  if roles.ios then
+                    [
+                      "aarch64-apple-ios"
+                      "aarch64-apple-ios-sim"
+                    ]
+                  else
+                    [ ]
+                );
             # TODO: find a way to include "aarch64-pc-windows-msvc" "x86_64-pc-windows-msvc"
           })
           clippy
@@ -98,21 +136,20 @@
             ]
           else
             [ ];
-        linuxTools =
-          if roles.linux then
-            [
-            ]
-          else
-            [ ];
+        linuxTools = if roles.linux then [ ] else [ ];
 
         macosLdLibraryPath = if roles.macos then [ ] else [ ];
         macosTools = if roles.macos then [ ] else [ ];
 
         iosLdLibraryPath = if roles.ios then [ ] else [ ];
-        iosTools = if roles.ios then [
-          pkgs.xcodegen
-          pkgs.gettext # provides envsubst for template substitution
-        ] else [ ];
+        iosTools =
+          if roles.ios then
+            [
+              pkgs.xcodegen
+              pkgs.gettext # provides envsubst for template substitution
+            ]
+          else
+            [ ];
 
         androidLdLibraryPath =
           if roles.android then
@@ -125,6 +162,7 @@
               [ ] # macOS does not need vulkan-loader and libGL
           else
             [ ];
+
         androidTools =
           if roles.android then
             [
@@ -254,7 +292,7 @@
                 popd > /dev/null
                 return 1
               fi
-              # Set environment variable and use envsubst for standard template substitution
+              # Set environment variable and use envsubst for template substitution
               export NIX_STORE_CARGO_PATH_BIN="${pkgs.cargo}/bin"
               envsubst '$NIX_STORE_CARGO_PATH_BIN' < app-ios/build_for_ios_with_cargo.bash.template > app-ios/build_for_ios_with_cargo.bash
               chmod +x app-ios/build_for_ios_with_cargo.bash
