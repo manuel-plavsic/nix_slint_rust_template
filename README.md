@@ -125,11 +125,11 @@ Steps:
 
 Note that you might have to add a shell-specific hook command, and your IDE might need a `direnv` extension.
 
+"Don't forget to run `direnv allow` each time you update the `.envrc` file. In some cases, you might have to run the command again also when the `flake.nix` gets changed.
+
 ### Disable certain platforms (`direnv`)
 
 Similarly to `nix develop`, you can disable certain platforms by setting the corresponding environment variables in `.envrc` and adding the `--impure` flag, which is necessary to read from the environment variables.
-
-Do not forget to run again `direnv allow` every time the `.envrc` file is changed.
 
 #### Example: Disable Android support (`direnv`)
 
