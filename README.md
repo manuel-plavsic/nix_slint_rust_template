@@ -15,7 +15,9 @@ A Rust crate is defined per platform. This allows to fine-tune the configuration
 ## How to use
 
 - Ensure you have `nix` installed.
-- Download and all that is in this repo to a new git repo, change/remove the README.md and the LICENSE, make optional small adjustments and create your first commit.
+- Download and all that is in this repo to a new git repo, change/remove the README.md and the LICENSE, make optional small adjustments (e.g., increase the Slint versions in the `Cargo.toml` files) and create your first commit.
+  - Note: your Slint application can only be released under a few specific licenses. See https://slint.dev/pricing for more information.
+- Run `nix flake update`.
 - Run `nix develop -c nu` (this ensures that nushell is already entered).
   - Note that Nushell is the shell used throughout this guide. Feel free to use another one, such as Bash, or Zsh.
   - Note that just `nix develop` will enter Bash automatically, regardless of which shell you are calling the command from or you set as default.
