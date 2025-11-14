@@ -22,7 +22,7 @@
         pkgs = import nixpkgs {
           inherit system overlays;
           config.allowUnfree = true;
-          android_sdk.accept_license = if roles.android then true else false; # todo: try if it works
+          android_sdk.accept_license = if roles.android then true else false;
         };
 
         isMac = pkgs.stdenv.isDarwin;
@@ -76,12 +76,18 @@
           gcc
           openssl
           pkg-config
-          nushell
         ];
 
         slintTools = with pkgs; [
           slint-lsp
           slint-viewer
+        ];
+
+        extraTools = with pkgs; [
+          nushell # powerful and pragmatic shell written in Rust
+          nil # Nix language server (older)
+          nixd # Nix language server (newer)
+          nixfmt-rfc-style # Official Nix formatter
         ];
 
         linuxLdLibraryPath =
@@ -182,6 +188,7 @@
           buildInputs =
             rustTools
             ++ slintTools
+            ++ extraTools
             ++ (if roles.linux then linuxTools else [ ])
             ++ (if roles.macos then macosTools else [ ])
             ++ (if roles.android then androidTools else [ ])
