@@ -1,0 +1,18 @@
+import { Button, VerticalBox } from "std-widgets.slint";
+
+import { SharedWindow } from "../../app/ui/shared-window.slint";
+export { SharedWindow }
+
+component MyCustomWidget inherits Window {
+    Text {
+        text: "This is macOS!";
+    }
+}
+
+export component MacosWindow inherits Window {
+    VerticalBox {
+        MyCustomWidget { }
+
+        SharedWindow { }
+    }
+}

@@ -17,16 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .select()
         .expect("Unable to create Slint backend with WGPU based renderer");
 
-    let ui = MainWindow::new()?;
-
-    ui.on_request_increase_value({
-        let ui_handle = ui.as_weak();
-        move || {
-            let ui = ui_handle.unwrap();
-            ui.set_counter(ui.get_counter() + 1);
-        }
-    });
-
+    let ui = MacosWindow::new()?;
     ui.run()?;
 
     Ok(())

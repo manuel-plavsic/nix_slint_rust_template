@@ -10,7 +10,7 @@ This template supports GNU/Linux, MacOS, Android and iOS.
 
 Since Windows is not supported by Nix, there is currently no support for it. However, a PR that adds Windows support (maybe through through WSL and cross compilation?) is very welcome.
 
-A Rust crate is defined per platform. This allows to fine-tune the configuration per platform, in detail. A reusable crate for the UI components is not yet included, but it is also planned.
+A Rust crate is defined per platform. This allows to fine-tune the configuration per platform, in detail.
 
 ## How to use
 
@@ -125,7 +125,7 @@ Steps:
 
 Note that you might have to add a shell-specific hook command, and your IDE might need a `direnv` extension.
 
-"Don't forget to run `direnv allow` each time you update the `.envrc` file. In some cases, you might have to run the command again also when the `flake.nix` gets changed.
+Don't forget to run `direnv allow` each time you update the `.envrc` file. In some cases, you might have to run the command again also when the `flake.nix` gets changed.
 
 ### Disable certain platforms (`direnv`)
 
