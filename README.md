@@ -1,4 +1,4 @@
-# Cross-platform template for Slint apps using Nix
+# Cross-platform template for Slint and Rust apps using Nix
 
 This template allows to create cross-platform Slint applications using a Nix flake, which is in charge of all the dependencies for all platforms. This leads to the same environment being easily reproduced across different machines. The template can be used to also include additional logic (e.g., backend dependencies).
 
@@ -6,23 +6,25 @@ The Android emulator is also included in the dependencies. The right configurati
 
 ## Platforms and corresponding crates
 
-This template supports GNU/Linux, MacOS and Android. Work in process is being done to include iOS too.
+This template supports GNU/Linux, MacOS, Android and iOS.
 
-Since Windows is not supported by Nix, there is currently no support for it. However, this might change in the future. The template might add support through WSL and cross compilation.
+Since Windows is not supported by Nix, there is currently no support for it. However, a PR that adds Windows support (maybe through through WSL and cross compilation?) is very welcome.
 
 A Rust crate is defined per platform. This allows to fine-tune the configuration per platform, in detail. A reusable crate for the UI components is not yet included, but it is also planned.
 
 ## How to use
 
 - Ensure you have `nix` installed.
-- Download and all that is in this repo to a new git repo, make small adjustments and create your first commit.
+- Download and all that is in this repo to a new git repo, change/remove the README.md and the LICENSE, make optional small adjustments and create your first commit.
 - Run `nix develop -c nu` (this ensures that nushell is already entered).
   - Note that Nushell is the shell used throughout this guide. Feel free to use another one, such as Bash, or Zsh.
-  - Note that just `nix develop` will enter bash automatically, regardless of which shell you are calling the command from or you set as default.
+  - Note that just `nix develop` will enter Bash automatically, regardless of which shell you are calling the command from or you set as default.
 
 ### Run app on GNU/Linux or MacOS
 
 NB: If you are on GNU/Linux, this template assumes that you are using Wayland (it is possible that it works also on X.11 out of the box). On MacOS, there are no considerations to be made.
+
+The Desktop app uses WGPU with hardware acceleration, but it is possible to use other backends (this will require updating the `Cargo.toml` files of the targeted platforms and potentially the `flake.nix`).
 
 Steps to run the app:
 
@@ -67,6 +69,27 @@ Note that *Live Preview* functionality is enabled out of the box. To disable it,
 #### Live Preview
 
 The Slint feature *Live Preview* does not seem to be compatible with Android at the moment.
+
+### Run app on iOS
+
+**Note:** Running the iOS app requires the iOS SDK to be present on the system. At the moment, this is possible only with the SDK installed directly from a version of Xcode not from nixpkgs, because the iOS SDK is not yet available on nixpkgs (`apple-sdk` only contains the macOS SDK). The only package that is included in the flake, and thus does not need to be installed separately, is `xcodegen`.
+
+Steps:
+1. Install Xcode from the App Store.
+2. Open Xcode and go to Settings > Components.
+3. Select the iOS SDK (ensure it matches the version defined in the flake.nix). The iOS Simulator SDK is not required to run the slint app on the simulator.
+4. Run `nix develop -c nu` and enter `app-ios`.
+5. Try running `cargo run --target aarch64-apple-ios` to test if the application compiles successfully. If not, check the output for any errors and try to resolve them.
+6. Adapt the information in the `project.yml` file.
+  - Note that `ExampleApp` is present twice. Replace both occurrences.
+  - `app-ios` is the name of the binary cargo produces. If you changed this name, you need to update the corresponding part in the `project.yml` file accordingly.
+7. Run `xcodegen`.
+8. Open XCode and build the app, it should complete fine.
+9. You can now run the app on your device or simulator.
+
+**Technical details:**
+- In the `shellHook` section of the flake, the two environment variables `DEVELOPER_DIR` and `SDKROOT` are unset to allow proper iOS SDK detection (note that these variables are initially set to nix-store paths when entering via `nix develop`. They are then immediately cleared with the mentioned `unset` calls to mimic the native macOS behavior where these variables aren't set globally).
+- The `PATH` gets altered to use the globally installed `/usr/bin/xcrun` instead of the one provided by nixpkgs, to prevent some conflicts (note that this "workaround" is necessary because `xcbuild`, which contains `xcrun`, gets automatically pulled as dependency, even though it is not directly listed as a dependency in the flake).
 
 ## Disable certain platforms
 

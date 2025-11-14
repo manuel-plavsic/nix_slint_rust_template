@@ -1,0 +1,20 @@
+name: ExampleApp
+options:
+  bundleIdPrefix: com.example
+settings:
+  ENABLE_USER_SCRIPT_SANDBOXING: NO
+targets:
+  ExampleApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "12.0"
+    info:
+      path: Info.plist
+      properties:
+        UILaunchScreen:
+          - ImageRespectSafeAreaInsets: false
+    sources: []
+    postCompileScripts:
+      - script: |
+          ./build_for_ios_with_cargo.bash app-ios
+        outputFileLists: $TARGET_BUILD_DIR/$EXECUTABLE_PATH

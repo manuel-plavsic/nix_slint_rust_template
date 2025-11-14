@@ -18,7 +18,7 @@
       system:
       let
         overlays = [ (import rust-overlay) ];
-        
+
         pkgs = import nixpkgs {
           inherit system overlays;
           config.allowUnfree = true;
@@ -102,9 +102,11 @@
         macosLdLibraryPath = if roles.macos then [ ] else [ ];
         macosTools = if roles.macos then [ ] else [ ];
 
-        # TODO
         iosLdLibraryPath = if roles.ios then [ ] else [ ];
-        iosTools = if roles.ios then [ ] else [ ];
+        iosTools = if roles.ios then [
+          pkgs.xcodegen
+          pkgs.gettext # provides envsubst for template substitution
+        ] else [ ];
 
         androidLdLibraryPath =
           if roles.android then
@@ -224,6 +226,35 @@
             echo "  ios:     ${toString roles.ios}"
             echo "  linux:   ${toString roles.linux}"
             echo "  macos:   ${toString roles.macos}"
+
+            ${pkgs.lib.optionalString (isMac && roles.ios) ''
+              # unset the following 2 envars (by default, they contain paths in the nix store)
+              # export DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer" # explicit alternative to the line below
+              unset DEVELOPER_DIR # implicit
+              # export SDKROOT="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.1.sdk" # explicit alternative to the line below
+              unset SDKROOT # implicit
+              export PATH=$(echo "$PATH" | tr ':' '\n' | grep -v xcbuild | paste -sd:) # this basically removes xcbuild's nix-store-path entry from the PATH
+
+              # Create iOS build script from template with cargo path replacement
+              # Save current directory and navigate to project root (this way nix develop can be run also from app-ios, or any other folder/subfolder)
+              pushd . > /dev/null
+              # Find project root by looking for flake.nix
+              while [[ ! -f "flake.nix" && "$PWD" != "/" ]]; do
+                cd ..
+              done
+              if [[ ! -f "flake.nix" ]]; then
+                echo "Error: Could not find project root (flake.nix not found)"
+                popd > /dev/null
+                return 1
+              fi
+              # Set environment variable and use envsubst for standard template substitution
+              export NIX_STORE_CARGO_PATH_BIN="${pkgs.cargo}/bin"
+              envsubst '$NIX_STORE_CARGO_PATH_BIN' < app-ios/build_for_ios_with_cargo.bash.template > app-ios/build_for_ios_with_cargo.bash
+              chmod +x app-ios/build_for_ios_with_cargo.bash
+              unset NIX_STORE_CARGO_PATH_BIN
+              # Restore original directory
+              popd > /dev/null
+            ''}
           '';
         };
       }
