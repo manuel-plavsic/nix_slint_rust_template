@@ -223,7 +223,7 @@ will result in a platform-not-found error. In case this list needs to be shorten
 
 At the time of writing, Vulkan is correctly detected only if `vulkan-loader` is present in the `LD_LIBRARY_PATH` and if the right paths to Vulkan ICD manifest files are present in `VK_ICD_FILENAMES`.
 
-For example, the following can be used to set `VK_ICD_FILENAMES` to:
+For example, this flake's `VK_ICD_FILENAMES` is set by default to:
 
 ```
 "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json:/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json"
