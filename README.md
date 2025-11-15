@@ -233,12 +233,6 @@ For example, this flake's `VK_ICD_FILENAMES` is set by default to:
 
 This should allow the emulator to use Vulkan using any x86_64 workstation. Of course, it is possible to remove some of the paths, or add more (see available ICDs on your machine with `ls /run/opengl-driver/share/vulkan/icd.d/`). This might be necessary if using GNU/Linux on ARM (not tested).
 
-#### Vulkan fallbacks to OpenGL (Host: GNU/Linux)
-
-While Vulkan is used, there seems to be a translation layer with OpenGL (in the logs appear `Graphics API Version OpenGL ES 3.0 (4.6 (Core Profile) Mesa 25.2.4)` and `useVulkanComposition: false`).
-
-If someone finds a way to enable Vulkan Composition, please open a PR or open an issue/discussion. That would be highly appreciated.
-
 #### Disable Vulkan (Host: GNU/Linux)
 
 If the emulator is not running correctly, the added flag forces OpenGL-only rendering:
