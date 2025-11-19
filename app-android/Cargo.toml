@@ -25,3 +25,8 @@ build_targets = [ "aarch64-linux-android", "x86_64-linux-android" ] # consider a
 
 [package.metadata.android.application]
 label = "Example"
+
+[package.metadata.android.sdk]
+min_sdk_version = 24
+target_sdk_version = 35
+max_sdk_version = 36

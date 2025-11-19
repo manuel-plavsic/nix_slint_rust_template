@@ -183,24 +183,18 @@ You might have to also change the cargo features.
 
 ### SDK Issues
 
-Some issues can be experienced if some of the platforms are removed.
+Some issues can be experienced if some of the essential platforms are removed.
 
-For example, changing the following part of the Nix Flake:
+As of November 2025, the `35.0.0` build tools version and the `35` platform version are necessary (one cannot only use the `36.0.0` build tools version and the `36` platform version).
+
+That means that changing the following part of the Nix Flake:
 
 ```
 buildToolsVersions = [
-  "30.0.3"
-  "33.0.2"
-  "34.0.0"
   "35.0.0"
   "36.0.0"
 ];
 platformVersions = [
-  "30" # Android 11
-  "31" # Android 12
-  "32" # Android 12L
-  "33" # Android 13
-  "34" # Android 14
   "35" # Android 15
   "36" # Android 16
 ];
@@ -217,7 +211,13 @@ platformVersions = [
 ];
 ```
 
-will result in a platform-not-found error. In case this list needs to be shortened, try removing the unwanted platforms one by one and testing immediately afterwards.
+will result in a platform-not-found error.
+
+#### Dependencies
+
+Some dependencies might need a specific version of the build tools. You need to add it to the `buildToolsVersions` list for the app to compile correctly (the respective platform version possibly also needs to be added to the `platformVersions` list).
+
+The Android tools provided by Google (installed without Nix) automate this process in the background (they automatically fetch the required build tools versions; multiple versions are cached automatically).
 
 ### Android Emulator
 

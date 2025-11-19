@@ -192,20 +192,20 @@
                 cmdLineToolsVersion = "8.0";
                 platformToolsVersion = "36.0.0";
                 buildToolsVersions = [
-                  "30.0.3"
-                  "33.0.2"
-                  "34.0.0"
+                  #"30.0.3"
+                  #"33.0.2"
+                  #"34.0.0"
                   "35.0.0"
                   "36.0.0"
                 ];
                 platformVersions = [
-                  "30" # Android 11
-                  "31" # Android 12
-                  "32" # Android 12L
-                  "33" # Android 13
-                  "34" # Android 14
-                  "35" # Android 15
-                  "36" # Android 16
+                  #"30" # Android 11
+                  #"31" # Android 12
+                  #"32" # Android 12L
+                  #"33" # Android 13
+                  #"34" # Android 14
+                  "35" # Android 15 (Note: v. 15 is necessary to compile ATM)
+                  "36" # Android 16 # apparently not supported yet by
                 ];
                 abiVersions = abiVersions;
                 includeEmulator = true;
@@ -264,7 +264,7 @@
           JAVA_HOME = if roles.android then pkgs.jdk17.home else null;
           GRADLE_OPTS =
             if roles.android then
-              "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/36.0.0/aapt2"
+              "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/35.0.0/aapt2" # update as required
             else
               null;
 
@@ -279,7 +279,7 @@
             echo "  linux:   ${toString roles.linux}"
             echo "  macos:   ${toString roles.macos}"
 
-            ${pkgs.lib.optionalString (isMac && roles.ios) ''
+            ${pkgs.lib.optionalString roles.ios ''
               # unset the following 2 envars (by default, they contain paths in the nix store)
               # export DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer" # explicit alternative to the line below
               unset DEVELOPER_DIR # implicit
