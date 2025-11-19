@@ -38,25 +38,25 @@
               false
             # otherwise (if NO_IOS is not set):
             else if isMac then
-              true
+              true # iOS utils only work on macOS ...
             else
-              false; # iOS utils only work on a Mac
+              false; # ... and not on Linux (or other future platforms)
           linux =
             if enabled (builtins.getEnv "NO_LINUX") then
               false
             # otherwise (if NO_LINUX is not set):
             else if isLinux then
-              true
+              true # Linux utils only work on a Linux machine...
             else
-              false; # Linux utils only work on a Linux machine
+              false; # ... and not on macOS (or other future platforms)
           macos =
             if enabled (builtins.getEnv "NO_MACOS") then
               false
             # otherwise (if NO_MACOS is not set):
             else if isMac then
-              true
+              true # macOS utils only work on a macOS machine ...
             else
-              false; # MacOS utils only work on a Linux machine
+              false; # ... and not on Linux (or other future platforms)
         };
 
         # minimal set of packages
@@ -69,8 +69,10 @@
                 if roles.linux then
                   if system == "aarch64-linux" then
                     [ "aarch64-unknown-linux-gnu" ]
-                  else
+                  else if system == "x86_64-linux" then
                     [ "x86_64-unknown-linux-gnu" ]
+                  else
+                    builtins.throw "Unsupported Linux architecture: ${system}. Only aarch64-linux and x86_64-linux are supported."
                 else
                   [ ]
               )
@@ -78,7 +80,12 @@
                 # MacOS targets
                 (
                   if roles.macos then
-                    if system == "aarch64-darwin" then [ "aarch64-apple-darwin" ] else [ "x86_64-apple-darwin" ]
+                    if system == "aarch64-darwin" then
+                      [ "aarch64-apple-darwin" ]
+                    else if system == "x86_64-darwin" then
+                      [ "x86_64-apple-darwin" ]
+                    else
+                      builtins.throw "Unsupported macOS architecture: ${system}. Only aarch64-darwin and x86_64-darwin are supported."
                   else
                     [ ]
                 )
@@ -146,7 +153,7 @@
           if roles.ios then
             [
               pkgs.xcodegen
-              pkgs.gettext # provides envsubst for template substitution
+              pkgs.gettext # provides envsubst for template substitution; only used in the shellHook
             ]
           else
             [ ];
@@ -240,16 +247,16 @@
           );
 
           # Android graphics envars
-          QT_QPA_PLATFORM = if roles.android then if isLinux then "wayland;xcb" else "cocoa" else null; # cocoa is the mac platform
+          QT_QPA_PLATFORM = if (roles.android && isLinux) then "wayland;xcb" else null;
           LIBGL_DRIVERS_PATH = if roles.android then "/run/opengl-driver/lib/dri" else null;
           VK_ICD_FILENAMES =
             if roles.android then
               if isLinux then
                 "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json:/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json:/run/opengl-driver/share/vulkan/icd.d/gfxstream_vk_icd.x86_64.json"
               else
-                null # in case of macOS, Vulkan is not used, so `null`
+                null # in case of macOS (or another platform in the future), Vulkan is not used
             else
-              null;
+              null; # in case Android support is disabled, the envar is not used.
 
           # Android envars
           ANDROID_HOME = if roles.android then "${androidSdk}/libexec/android-sdk" else null;
