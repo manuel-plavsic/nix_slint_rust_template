@@ -1,3 +1,7 @@
+# Migration to Codeberg
+
+This repository was moved to Codeberg -> https://codeberg.org/plavsic/nix_slint_rust_template
+
 # Cross-platform template for Slint and Rust apps using Nix
 
 This template allows to create cross-platform Slint applications using a Nix flake, which is in charge of all the dependencies for all platforms. This leads to the same environment being easily reproduced across different machines. The template can be used to also include additional logic (e.g., backend dependencies).
