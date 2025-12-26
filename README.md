@@ -6,7 +6,7 @@ This repository was moved to Codeberg -> https://codeberg.org/plavsic/nix_slint_
 
 # Note
 
-***Please, start a new project using the Codeberg repo***, the code there is truly reusable across platfroms and it includes many improvements.
+***Please, start a new project using the Codeberg repo***, as the code there is truly reusable across platfroms and it includes many improvements.
 
 Therefore, ***do not start a new project using this archived GitHub repo***, as the code here is not easily reusable across platforms and it does not include many fixes.
 
