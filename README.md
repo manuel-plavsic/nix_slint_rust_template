@@ -1,6 +1,20 @@
 # Migration to Codeberg
 
-This repository was moved to Codeberg -> https://codeberg.org/plavsic/nix_slint_rust_template
+This repository was moved to Codeberg -> https://codeberg.org/plavsic/nix_slint_rust_template in an attempt to reduce dependence on megacorporations and support community-driven platforms.
+
+----------
+
+# Note
+
+***Please, start a new project using the Codeberg repo***, the code there is truly reusable across platfroms and it includes many improvements.
+
+Therefore, ***do not start a new project using this archived GitHub repo***, as the code here is not easily reusable across platforms and it does not include many fixes.
+
+----------
+
+Archived README.md follows below.
+
+----------
 
 # Cross-platform template for Slint and Rust apps using Nix
 
